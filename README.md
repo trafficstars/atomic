@@ -1,3 +1,5 @@
+It's a project for benchmarks.
+
 ```
 BenchmarkSimpleStringMapGet-4           30000000                40.4 ns/op             0 B/op          0 allocs/op
 BenchmarkAtomicStringMapGet-4           30000000                44.8 ns/op             0 B/op          0 allocs/op

@@ -3,6 +3,7 @@ package atomic
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"testing"
 )
 
@@ -97,6 +98,30 @@ func BenchmarkAtomicUint64MapGet(b *testing.B) {
 			defer wg.Done()
 			for n := 0; n < b.N; n++ {
 				_ = m.Get(0)
+			}
+		}()
+	}
+	wg.Wait()
+}
+
+func BenchmarkAtomicValueUint64MapGet(b *testing.B) {
+	var wg sync.WaitGroup
+
+	values := map[uint64]interface{}{}
+	m := atomic.Value{}
+
+	for i := uint64(0); i < itemsAmount; i++ {
+		values[i] = i
+	}
+	m.Store(&values)
+
+	b.ResetTimer()
+	for c := 0; c < concurrency; c++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for n := 0; n < b.N; n++ {
+				_ = (*m.Load().(*map[uint64]interface{}))[uint64(0)]
 			}
 		}()
 	}
